@@ -3,7 +3,7 @@
 global _start
 
 section .data
-    init_msg db "Введите x из [-9;9] в формате x*1000: ", 0
+    init_msg db "Введите x из [-9;9] в формате x*1000: ", 10, 0
     err_msg db "x не принадлежит [-9;9]", 10, 0
     answer_msg db "y = ", 10, 0
 
