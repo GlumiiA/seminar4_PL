@@ -13,4 +13,3 @@ extern read_string
 extern parse_uint
 extern parse_int
 extern string_copy
-extern print_float
