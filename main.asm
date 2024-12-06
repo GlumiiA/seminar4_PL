@@ -76,10 +76,10 @@ _start:
     fstp qword [y]            
 
     mov rdi, answer_msg
-	call print_string
-	fstp dword[x]
-	mov edi, dword[x]
-	call print_int	
+    call print_string
+    fstp dword[x]
+    mov edi, dword[x]
+    call print_int	
     call exit
 
 .error_handling:
