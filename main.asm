@@ -46,33 +46,33 @@ _start:
 
 .less_than_neg_6000:
     ; Вычисляем x^2
-    fld st0                    ; Повторно загружаем x
-    fmul st0, st0       ; x^2
+    fld st0                    
+    fmul st0, st0       
     fstp qword [y]            ; сохраняем x^2 в памяти
 
     ; Вычисляем 9 - x^2
     fld qword [y]             ; загружаем x^2
-    fld qword [num9]             ; загружаем 9 в FPU
+    fld qword [num9]             
     fsub st1, st0             ; 9 - x^2
-    fstp qword [y]            ; сохраняем 9 - x^2
+    fstp qword [y]           
 
     ; Проверяем, не отрицательное ли значение
     fld qword [y]             ; загружаем (9 - x^2)
-    fcomip st0, st1           ; Сравниваем с 0
+    fcomip st0, st1           
     jbe .error_handling        ; Если y <= 0, выходим с ошибкой
 
 .calculate_sqrt:
     ; Вычисляем корень из y
-    fld qword [y]             ; загружаем (9 - x^2)
+    fld qword [y]             
     fsqrt                      ; вычисляем корень
     fchs                       ; Изменяем знак
-    fstp qword [y]            ; сохраняем в y
+    fstp qword [y]            
 
 .print_num:
     fld qword [y]             ; загружаем результат
-    fld qword [num1000]       ; загружаем 1000
+    fld qword [num1000]       
     fdiv                       ; y / 1000
-    fstp qword [y]            ; сохраняем результат
+    fstp qword [y]            
 
     mov rdi, [y]              ; Загружаем результат для вывода
     call print_int             ; Выводим результат
