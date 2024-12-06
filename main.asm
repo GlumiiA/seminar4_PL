@@ -51,7 +51,7 @@ _start:
 .less_than_neg_6000:
     ; Вычисляем x^2
     fld st0                    ; Повторно загружаем x
-    fmul st(0)        ; x^2
+    fmul st0, st0       ; x^2
     fstp qword [y]            ; сохраняем x^2 в памяти
 
     ; Вычисляем 9 - x^2
