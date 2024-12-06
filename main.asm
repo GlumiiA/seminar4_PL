@@ -39,6 +39,53 @@ mov rdi, rax
 fld dword [x]        ; загрузить x в стек FPU
 fild dword [x]      ; преобразовать в FPU (целое->действительное)
 
+fld dword [x]        ; загрузить x 
+fldz                 
+fld dword [num_neg_6000] 
+fcomip st1, st0      ; Сравнить x с -6000, и удалить st0
+fstsw ax             
+sahf                  
+jb .less_than_neg_6000    ; Если x < -6000
+
+.less_than_neg_6000:
+    ; Вычисляем x^2
+    fld st(0)           
+    fmul st(0), st(0)   
+    fstp dword [y]      ; сохраняем x^2 в памяти
+
+    ; Вычисляем 9 - x^2
+    fld dword [y]       ; загружаем x^2
+    fld qword 9.0       ; загружаем 9 в FPU
+    fsub st(1), st(0)   ; 9 - x^2
+    fstp dword [y] ; сохраняем 9 - x^2
+
+    ; Проверяем, не отрицательное ли значение
+    fcomip st(0), st(1)
+    fstsw ax
+    sahf
+    jae .calculate_sqrt
+    ; Если значение под корнем отрицательное, выводим сообщение об ошибке
+    jmp .error_handling
+
+.calculate_sqrt:
+    ; Вычисляем корень из y_value
+    fld dword [y]  ; загружаем (9 - x^2)
+    fsqrt                 ; вычисляем sqrt
+    fchs  ; Изменяем знак
+    fstp y                ; сохраняем в y
+
+.print_num:
+    fld dword [y]         
+    fld dword [num1000]       
+    ; Делим верхний регистр на следующий
+    fdiv                       
+    fstp dword [y]   
+
+    mov edi, dword[y]
+    call print_int  
+    jmp .exit
+    add esp, 8 ; очищаем стек
+
 .error_handling:
     mov rdi, err_msg
     call print_err
