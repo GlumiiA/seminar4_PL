@@ -46,35 +46,19 @@ _start:
     jb .less_than_neg_6000
 
 .less_than_neg_6000:
-    ; Вычисляем x^2
-    fld st0                    
-    fmul st0, st0       
-    fstp qword [y]            ; сохраняем x^2 в памяти
-
-    ; Вычисляем 9 - x^2
-    fld qword [y]             ; загружаем x^2
-    fld qword [num9]             
-    fsub st1, st0             ; 9 - x^2
-    fstp qword [y]           
-
-    ; Проверяем, не отрицательное ли значение
-    fld qword [y]             ; загружаем (9 - x^2)
-    fcomip st0, st1           
-    jbe .error_handling        ; Если y <= 0, выходим с ошибкой
-
-.calculate_sqrt:
-    ; Вычисляем корень из y
-    fld qword [y]             
-    fsqrt                      ; вычисляем корень
-    fchs                       ; Изменяем знак
-    fstp qword [y]            
+    call int_to_float
+    mov dword[y], 9
+	fild dword[y]
+	fadd
+	fmul st0, st0 ; Вычисляем x^2
+	fchs ; Изменяем знак
+	fild dword[y]
+	fadd ; загружаем (9 - x^2)
+	fabs
+	fsqrt
+	jmp .print_num    
 
 .print_num:
-    fld qword [y]             ; загружаем результат
-    fld qword [num1000]       
-    fdiv                       ; y / 1000
-    fstp qword [y]            
-
     mov rdi, answer_msg
     call print_string
     fstp dword[x]
@@ -86,3 +70,11 @@ _start:
     mov rdi, err_msg
     call print_err             ; Выводим ошибку
     call exit
+
+int_to_float:
+    mov dword[x], eax
+	fild dword[x]
+    fld dword[num1000]	
+    fdiv                       ; y / 1000
+	ret
+
