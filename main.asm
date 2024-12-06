@@ -27,7 +27,7 @@ mov rsi, 24
 call read_word  ; ввод x*1000 
 
 mov rdi, rax    
-call parse_int       ; спарсили в инт
+call parse_int       
 ; проверяем находиться ли x в [-9;9] 
 cmp rax, -9000       ; -9 * 1000
 jl .error_handling
@@ -49,7 +49,7 @@ jb .less_than_neg_6000    ; Если x < -6000
 
 .less_than_neg_6000:
     ; Вычисляем x^2
-    fld st(0)           
+    fld dword [x]           
     fmul st(0), st(0)   
     fstp dword [y]      ; сохраняем x^2 в памяти
 
