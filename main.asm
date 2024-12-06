@@ -4,6 +4,7 @@ section .data
     init_msg db "Введите x из [-9;9] в формате x*1000: ", 10, 0
     err_msg db "x не принадлежит [-9;9]", 10, 0
     answer_msg db "y = ", 10, 0
+    fmt db "Значение: %f", 10, 0   ; Формат для вывод
 
     num1000 dq 1000.0
     num9 dq 9.0
