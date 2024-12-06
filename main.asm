@@ -34,17 +34,13 @@ _start:
     jl .error_handling
     cmp rax, 9000              ; 9000
     jg .error_handling
-
     ; Храним x
     mov [x], rax               ; Сохраняем x*1000 в памяти
 
     ; Загружаем x в регистр FPU как вещественное число
     fild dword [x]             ; преобразуем в FPU (целое->действительное)
 
-    ; Определяем, меньше ли x -6000
-    fld dword [num_neg_6000]
-    fcomip st1, st0            ; Сравнить x с -6000
-
+    cmp rax, -6000           
     ; Если x < -6000, продолжаем выполнение. Иначе
     jb .less_than_neg_6000
 
@@ -80,9 +76,9 @@ _start:
 
     mov rdi, [y]              ; Загружаем результат для вывода
     call print_int             ; Выводим результат
-    jmp .exit
+    call exit
 
 .error_handling:
     mov rdi, err_msg
     call print_err             ; Выводим ошибку
-    jmp .exit
+    call exit
