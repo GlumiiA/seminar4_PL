@@ -5,6 +5,7 @@ global _start
 section .data
     init_msg db "Введите x из [-9;9] в формате x*1000: ", 0
     err_msg db "x не принадлежит [-9;9]", 10, 0
+    answer_msg db "y = ", 10, 0
 
     num1000 dq 1000.0
     num9 dq 9.0
@@ -74,8 +75,11 @@ _start:
     fdiv                       ; y / 1000
     fstp qword [y]            
 
-    mov rdi, [y]              ; Загружаем результат для вывода
-    call print_int             ; Выводим результат
+    mov rdi, answer_msg
+	call print_string
+	fstp dword[x]
+	mov edi, dword[x]
+	call print_int	
     call exit
 
 .error_handling:
