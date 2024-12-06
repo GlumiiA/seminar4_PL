@@ -64,8 +64,8 @@ _start:
 .print_num:
     mov rdi, answer_msg
     call print_string
-    mov rdi, [y]              ; Правильное извлечение y для вывода
-    call print_float          ; Предполагается, что есть такая функция для печати float
+    mov xmm0, [y]              
+    call print_float         
     call exit
 
 .error_handling:
