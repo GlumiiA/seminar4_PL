@@ -62,12 +62,13 @@ _start:
     fstp qword [y]            ; Сохраняем y из st0 в y
 
 .print_num:
-    mov rdi, answer_msg
-    call print_string    
-
-    movsd xmm0, qword [y]            
-    mov rdi, fmt                      ; Указываем адрес строки формата в rdi
-    call printf             
+	mov rdi, answer_msg
+	call print_string
+	fstp dword[y]
+	mov edi, dword[y]
+	call print_int	
+	jmp .exit
+         
 
 .error_handling:
     mov rdi, err_msg
