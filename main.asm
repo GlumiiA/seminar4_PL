@@ -41,4 +41,4 @@ fild dword [x]      ; преобразовать в FPU (целое->дейст�
 
 .error_handling:
     mov rdi, err_msg
-    call print_error
+    call print_err
