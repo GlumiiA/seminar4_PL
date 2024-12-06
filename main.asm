@@ -9,72 +9,66 @@ section .data
 
     num1000 dq 1000.0
     num9 dq 9.0
-    k_interval_0_3 dq -1.0
-    b_interval_0_3 dq 3.0
     result dq 40.0
-    num_neg_6000 dq -6000.0  ; Объявление переменной для -6000
+    num_neg_6000 dq -6000.0
 
 section .bss
-    x resd 1                   ; храним x
-    y resq 1                   ; храним y (в формате с плавающей точкой)
+    x resq 1                  ; храним x как вещественное число
+    y resq 1                  ; храним y как вещественное число
 
 section .text
 _start:
     mov rdi, init_msg
     call print_string
 
-    sub rsp, 24                ; резервируем место
+    sub rsp, 24               ; резервируем место
     mov rdi, rsp
     mov rsi, 24
-    call read_word             ; ввод x*1000 
+    call read_word            ; ввод x*1000 
 
     mov rdi, rax
-    call parse_int             ; парсим введенное значение
-    ; Проверяем находится ли x в [-9000;9000]
-    cmp rax, -9000             ; -9000
+    call parse_int            ; парсим введенное значение
+
+    ; Проверяем, находится ли x в [-9000;9000]
+    cmp rax, -9000            ; -9000
     jl .error_handling
-    cmp rax, 9000              ; 9000
+    cmp rax, 9000             ; 9000
     jg .error_handling
+
     ; Храним x
-    mov [x], rax               ; Сохраняем x*1000 в памяти
+    mov [x], rax              ; Сохраняем x*1000 в памяти
 
     ; Загружаем x в регистр FPU как вещественное число
-    fild dword [x]             ; преобразуем в FPU (целое->действительное)
+    fild qword [x]            ; преобразуем в FPU (целое->действительное)
+    fdiv qword [num1000]      ; y = x / 1000
 
-    cmp rax, -6000           
-    ; Если x < -6000, продолжаем выполнение. Иначе
+    ; Проверяем, если x < -6000
+    fld st0                   ; Копируем x в верхний стек
+    cmp st0, qword [num_neg_6000]
     jb .less_than_neg_6000
 
+    ; Здесь можно добавить ветку, которая обрабатывает случай, когда x >= -6000
+
 .less_than_neg_6000:
-    call int_to_float
-    mov dword[y], 9
-	fild dword[y]
-	fadd
-	fmul st0, st0 ; Вычисляем x^2
-	fchs ; Изменяем знак
-	fild dword[y]
-	fadd ; загружаем (9 - x^2)
-	fabs
-	fsqrt
-	jmp .print_num    
+    fld st0                   ; Загружаем x в верхний регистр
+    fmul st0, st0             ; x^2
+    fchs                       ; Меняем знак
+    fld qword [num9]          ; Загружаем 9
+    fadd                       ; 9 - x^2
+    fabs                       ; Берём абсолютное значение
+    fsqrt                      ; Извлекаем квадратный корень
+
+    ; Теперь сохраняем результат в y
+    fstp qword [y]            ; Сохраняем y из st0 в y
 
 .print_num:
     mov rdi, answer_msg
     call print_string
-    fstp dword[x]
-    mov edi, dword[x]
-    call print_int	
+    mov rdi, [y]              ; Правильное извлечение y для вывода
+    call print_float          ; Предполагается, что есть такая функция для печати float
     call exit
 
 .error_handling:
     mov rdi, err_msg
     call print_err             ; Выводим ошибку
     call exit
-
-int_to_float:
-    mov dword[x], eax
-	fild dword[x]
-    fld dword[num1000]	
-    fdiv                       ; y / 1000
-	ret
-
