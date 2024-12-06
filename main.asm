@@ -1,7 +1,5 @@
 %include "lib.inc"
 
-global _start
-
 section .data
     init_msg db "Введите x из [-9;9] в формате x*1000: ", 10, 0
     err_msg db "x не принадлежит [-9;9]", 10, 0
@@ -17,6 +15,8 @@ section .bss
     y resq 1                  ; храним y как вещественное число
 
 section .text
+extern printf  
+global _start
 _start:
     mov rdi, init_msg
     call print_string
@@ -63,9 +63,11 @@ _start:
 .print_num:
     mov rdi, answer_msg
     call print_string
-    movsd xmm0, qword [y]          
-    call print_float         
-    call exit
+    movsd xmm0, qword [y]           
+    ; Вывод значения с плавающей точкой
+    mov rdi, fmt                    ; Указываем адрес строки формата в rdi
+    mov rsi, xmm0                   ; Передаем xmm0 как второй аргумент для printf
+    call printf                     ; Вызываем функцию printf
 
 .error_handling:
     mov rdi, err_msg
