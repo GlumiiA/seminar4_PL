@@ -67,7 +67,7 @@ _start:
 	fstp dword[y]
 	mov edi, dword[y]
 	call print_int	
-	jmp .exit
+	call exit
          
 
 .error_handling:
