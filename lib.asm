@@ -23,6 +23,7 @@ global read_string
 global parse_uint
 global parse_int
 global string_copy
+global print_float
 
  
 ; Принимает код возврата и завершает текущий процесс
@@ -324,3 +325,23 @@ string_copy:
     .end: 
         mov rax, rcx
         ret
+
+; print_float - вывод числа с плавающей точкой на экран
+; xmm0 - число (тип double)
+print_float:
+    ; Подготовим буфер для хранения строки
+    sub rsp, 64             ; отложим место на стеке для строки (64 байта)
+    mov rsi, rsp            ; укажем rsi на начало буфера
+
+    ; Преобразуем число в строку
+    mov rax, 1              ; Флаг для конвертации 1e-7 вещей
+    cvtsd2si rdi, xmm0      ; преобразуем double в 64-битное целое число
+    mov r8, rdi             ; Сохраняем целую часть в r8
+    
+    mov rdi, rsi            ; Указываем буфер в rdi для sprintf
+    mov rax, 0              
+    mov rdi, fmt            ; Указываем формат
+    call sprintf            ; Вызываем sprintf, чтобы записать значение в строку
+    call print_string
+    add rsp, 64             ; Освобождаем буфер
+    ret
