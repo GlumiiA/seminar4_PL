@@ -43,8 +43,7 @@ _start:
     fdiv qword [num1000]      ; y = x / 1000
 
     ; Проверяем, если x < -6000
-    fld st0                   ; Копируем x в верхний стек
-    cmp st0, qword [num_neg_6000]
+    cmp rax, -6000
     jb .less_than_neg_6000
 
     ; Здесь можно добавить ветку, которая обрабатывает случай, когда x >= -6000
@@ -64,7 +63,7 @@ _start:
 .print_num:
     mov rdi, answer_msg
     call print_string
-    mov xmm0, [y]              
+    movsd xmm0, qword [y]          
     call print_float         
     call exit
 
