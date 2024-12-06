@@ -63,12 +63,11 @@ _start:
 
 .print_num:
     mov rdi, answer_msg
-    call print_string
-    movsd xmm0, qword [y]           
-    ; Вывод значения с плавающей точкой
-    mov rdi, fmt                    ; Указываем адрес строки формата в rdi
-    mov rsi, xmm0                   ; Передаем xmm0 как второй аргумент для printf
-    call printf                     ; Вызываем функцию printf
+    call print_string    
+
+    movsd xmm0, qword [y]            
+    mov rdi, fmt                      ; Указываем адрес строки формата в rdi
+    call printf             
 
 .error_handling:
     mov rdi, err_msg
