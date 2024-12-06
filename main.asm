@@ -7,6 +7,7 @@ section .data
     err_msg db "x не принадлежит [-9;9]", 10, 0
 
     num1000 dq 1000.0
+    num9 dq 9.0
     k_interval_0_3 dq -1.0
     b_interval_0_3 dq 3.0
     result dq 40.0
@@ -50,12 +51,12 @@ _start:
 .less_than_neg_6000:
     ; Вычисляем x^2
     fld st0                    ; Повторно загружаем x
-    fmul st(0), st(0)         ; x^2
+    fmul st(0)        ; x^2
     fstp qword [y]            ; сохраняем x^2 в памяти
 
     ; Вычисляем 9 - x^2
     fld qword [y]             ; загружаем x^2
-    fld qword 9.0             ; загружаем 9 в FPU
+    fld qword [num9]             ; загружаем 9 в FPU
     fsub st1, st0             ; 9 - x^2
     fstp qword [y]            ; сохраняем 9 - x^2
 
